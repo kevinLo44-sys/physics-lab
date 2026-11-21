@@ -85,25 +85,55 @@ function updateRankine() {
 
   const { ctx, w, h } = setupCanvas('rank-canvas');
   ctx.clearRect(0, 0, w, h);
-  const wallX = 60, baseY = h - 30, topY = 30;
-  ctx.strokeStyle = '#94a3b8';
-  ctx.lineWidth = 4;
+  const wallX = 70, baseY = h - 25, topY = 25;
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 6;
   ctx.beginPath(); ctx.moveTo(wallX, topY); ctx.lineTo(wallX, baseY); ctx.stroke();
+
   const maxP = Ka * gamma * H;
-  const scale = Math.min(80, (w - wallX - 40) / Math.max(maxP, 1));
-  ctx.fillStyle = 'rgba(59,130,246,0.4)';
+  const arrowScale = Math.min(90, (w - wallX - 50) / Math.max(maxP, 5));
+
+  for (let i = 0; i <= 6; i++) {
+    const frac = i / 6;
+    const y = topY + frac * (baseY - topY);
+    const p = frac * maxP;
+    const len = Math.max(8, p * arrowScale);
+    const x1 = wallX + 8;
+    const x2 = x1 + len;
+
+    ctx.strokeStyle = '#3b82f6';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x1, y);
+    ctx.lineTo(x2, y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x2, y);
+    ctx.lineTo(x2 - 6, y - 4);
+    ctx.moveTo(x2, y);
+    ctx.lineTo(x2 - 6, y + 4);
+    ctx.stroke();
+  }
+
+  const resY = topY + (2/3) * (baseY - topY);
+  const resLen = Math.min(100, Pa * 0.4);
+  ctx.strokeStyle = '#ef4444';
+  ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.moveTo(wallX, topY);
-  ctx.lineTo(wallX + maxP * scale, baseY);
-  ctx.lineTo(wallX, baseY);
-  ctx.closePath();
-  ctx.fill();
-  ctx.strokeStyle = '#3b82f6';
+  ctx.moveTo(wallX + 8, resY);
+  ctx.lineTo(wallX + 8 + resLen, resY);
   ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(wallX + 8 + resLen, resY);
+  ctx.lineTo(wallX + 2 + resLen, resY - 6);
+  ctx.moveTo(wallX + 8 + resLen, resY);
+  ctx.lineTo(wallX + 2 + resLen, resY + 6);
+  ctx.stroke();
+
   ctx.fillStyle = '#e2e8f0';
-  ctx.font = '11px system-ui';
-  ctx.fillText('Wall', wallX - 45, (topY + baseY)/2);
-  ctx.fillText('Active pressure', wallX + 10, topY + 20);
+  ctx.font = '12px system-ui';
+  ctx.fillText('Wall', 15, (topY + baseY)/2);
+  ctx.fillText('Resultant Pa', wallX + 15 + resLen, resY - 8);
 }
 
 function getNFactors(phi) {
@@ -137,33 +167,45 @@ function updateBearing() {
 
   const { ctx, w, h } = setupCanvas('bc-canvas');
   ctx.clearRect(0, 0, w, h);
-  const groundY = h * 0.55;
+  const groundY = h * 0.62;
   ctx.fillStyle = '#1e293b';
   ctx.fillRect(0, groundY, w, h - groundY);
   ctx.strokeStyle = '#64748b';
+  ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(0, groundY); ctx.lineTo(w, groundY); ctx.stroke();
-  const fW = Math.min(B * 25, w * 0.4);
+
+  const fW = Math.min(Math.max(B * 30, 60), w * 0.45);
   const fX = (w - fW) / 2;
-  const fH = 18;
+  const fH = 22;
+  const fY = groundY - fH - Math.min(Df * 6, 40);
   ctx.fillStyle = '#475569';
-  ctx.fillRect(fX, groundY - fH - Df * 8, fW, fH);
+  ctx.fillRect(fX, fY, fW, fH);
+
+  const arrowScale = Math.min(50, qu / 20);
   ctx.strokeStyle = '#ef4444';
   ctx.lineWidth = 2;
-  for (let i = 0; i < 5; i++) {
-    const x = fX + (i + 0.5) * fW / 5;
+  const nArrows = 7;
+  for (let i = 0; i < nArrows; i++) {
+    const x = fX + (i + 0.5) * fW / nArrows;
+    const len = Math.max(12, arrowScale);
+    const y1 = fY + fH + 2;
+    const y2 = y1 + len;
     ctx.beginPath();
-    ctx.moveTo(x, groundY - fH - Df * 8 + 4);
-    ctx.lineTo(x, groundY - fH - Df * 8 - 20);
+    ctx.moveTo(x, y1);
+    ctx.lineTo(x, y2);
     ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(x - 4, groundY - fH - Df * 8 - 12);
-    ctx.lineTo(x, groundY - fH - Df * 8 - 20);
-    ctx.lineTo(x + 4, groundY - fH - Df * 8 - 12);
+    ctx.moveTo(x, y2);
+    ctx.lineTo(x - 4, y2 - 6);
+    ctx.moveTo(x, y2);
+    ctx.lineTo(x + 4, y2 - 6);
     ctx.stroke();
   }
+
   ctx.fillStyle = '#e2e8f0';
-  ctx.font = '11px system-ui';
-  ctx.fillText('Footing', fX, groundY - fH - Df * 8 - 28);
+  ctx.font = '12px system-ui';
+  ctx.fillText('Footing', fX + fW/2 - 20, fY - 6);
+  ctx.fillText('Soil reaction forces', fX, groundY + 18);
 }
 
 function updateConsolidation() {
