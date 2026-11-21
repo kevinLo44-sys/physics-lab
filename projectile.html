@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projectile Motion • Physics Lab</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Projectile Motion</h1>
+      <p class="tagline">Interactive simulation</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <a href="index.html" class="back-link">← Back to simulations</a>
+
+    <div class="sim-layout">
+      <div class="controls">
+        <h2>Controls</h2>
+
+        <div class="control-group">
+          <label>
+            Initial speed
+            <span id="v0-val">20.0 m/s</span>
+          </label>
+          <input type="range" id="v0" min="1" max="50" step="0.5" value="20" />
+        </div>
+
+        <div class="control-group">
+          <label>
+            Launch angle
+            <span id="angle-val">45°</span>
+          </label>
+          <input type="range" id="angle" min="0" max="90" step="1" value="45" />
+        </div>
+
+        <div class="control-group">
+          <label>
+            Gravity
+            <span id="g-val">9.81 m/s²</span>
+          </label>
+          <input type="range" id="g" min="1" max="20" step="0.1" value="9.81" />
+        </div>
+
+        <div class="control-group">
+          <label>
+            Air resistance
+            <span id="drag-val">0.000</span>
+          </label>
+          <input type="range" id="drag" min="0" max="0.08" step="0.001" value="0" />
+        </div>
+      </div>
+
+      <div>
+        <div class="canvas-wrap">
+          <canvas id="canvas"></canvas>
+        </div>
+        <div class="readouts">
+          <div class="readout">
+            <span>Range</span>
+            <strong id="range">0.0 m</strong>
+          </div>
+          <div class="readout">
+            <span>Max height</span>
+            <strong id="maxH">0.0 m</strong>
+          </div>
+          <div class="readout">
+            <span>Time of flight</span>
+            <strong id="time">0.00 s</strong>
+          </div>
+          <div class="readout">
+            <span>Final speed</span>
+            <strong id="finalV">0.0 m/s</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Physics Lab template • Projectile Motion simulation</p>
+    </div>
+  </footer>
+
+  <script src="projectile.js"></script>
+</body>
+</html>
