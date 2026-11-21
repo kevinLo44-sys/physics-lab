@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geotechnics • Physics Lab</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .calc-section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .calc-section h3 { margin-bottom: 0.75rem; font-size: 1.2rem; }
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 700px) { .calc-grid { grid-template-columns: 1fr; } }
+    .result-box {
+      background: #0f172a;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+      font-family: ui-monospace, monospace;
+    }
+    .result-box strong { color: var(--accent); }
+    .formula {
+      font-family: ui-monospace, monospace;
+      background: #020617;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      margin: 0.5rem 0 1rem;
+      font-size: 0.9rem;
+      color: #93c5fd;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Geotechnics</h1>
+      <p class="tagline">Interactive soil mechanics & foundation equations</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <a href="index.html" class="back-link">← Back to simulations</a>
+
+    <!-- Mohr-Coulomb -->
+    <section class="calc-section">
+      <h3>Mohr-Coulomb Shear Strength</h3>
+      <div class="formula">τ = c + σ · tan(φ)</div>
+      <div class="calc-grid">
+        <div>
+          <div class="control-group">
+            <label>Cohesion c <span id="mc-c-val">10 kPa</span></label>
+            <input type="range" id="mc-c" min="0" max="100" step="1" value="10" />
+          </div>
+          <div class="control-group">
+            <label>Friction angle φ <span id="mc-phi-val">30°</span></label>
+            <input type="range" id="mc-phi" min="0" max="45" step="1" value="30" />
+          </div>
+          <div class="control-group">
+            <label>Normal stress σ <span id="mc-sigma-val">50 kPa</span></label>
+            <input type="range" id="mc-sigma" min="0" max="500" step="5" value="50" />
+          </div>
+        </div>
+        <div class="result-box" id="mc-result">Shear strength τ = — kPa</div>
+      </div>
+    </section>
+
+    <!-- Rankine Earth Pressure -->
+    <section class="calc-section">
+      <h3>Rankine Earth Pressure Coefficients</h3>
+      <div class="formula">Ka = tan²(45° − φ/2) &nbsp;&nbsp; Kp = tan²(45° + φ/2)</div>
+      <div class="calc-grid">
+        <div>
+          <div class="control-group">
+            <label>Friction angle φ <span id="rank-phi-val">30°</span></label>
+            <input type="range" id="rank-phi" min="0" max="45" step="1" value="30" />
+          </div>
+          <div class="control-group">
+            <label>Wall height H <span id="rank-h-val">5 m</span></label>
+            <input type="range" id="rank-h" min="1" max="20" step="0.5" value="5" />
+          </div>
+          <div class="control-group">
+            <label>Unit weight γ <span id="rank-g-val">18 kN/m³</span></label>
+            <input type="range" id="rank-g" min="10" max="25" step="0.5" value="18" />
+          </div>
+        </div>
+        <div class="result-box" id="rank-result">Ka = — &nbsp; Kp = —</div>
+      </div>
+    </section>
+
+    <!-- Terzaghi Bearing Capacity (simplified) -->
+    <section class="calc-section">
+      <h3>Terzaghi Bearing Capacity (Strip Footing)</h3>
+      <div class="formula">qu = c·Nc + q·Nq + 0.5·γ·B·Nγ</div>
+      <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1rem;">Approximate Nc, Nq, Nγ used for teaching. For φ=0: Nc≈5.7, Nq=1, Nγ=0.</p>
+      <div class="calc-grid">
+        <div>
+          <div class="control-group">
+            <label>Cohesion c <span id="bc-c-val">20 kPa</span></label>
+            <input type="range" id="bc-c" min="0" max="150" step="5" value="20" />
+          </div>
+          <div class="control-group">
+            <label>Friction φ <span id="bc-phi-val">25°</span></label>
+            <input type="range" id="bc-phi" min="0" max="40" step="1" value="25" />
+          </div>
+          <div class="control-group">
+            <label>Footing width B <span id="bc-b-val">2 m</span></label>
+            <input type="range" id="bc-b" min="0.5" max="10" step="0.5" value="2" />
+          </div>
+          <div class="control-group">
+            <label>Depth Df <span id="bc-df-val">1 m</span></label>
+            <input type="range" id="bc-df" min="0" max="5" step="0.5" value="1" />
+          </div>
+          <div class="control-group">
+            <label>Unit weight γ <span id="bc-g-val">18 kN/m³</span></label>
+            <input type="range" id="bc-g" min="10" max="25" step="0.5" value="18" />
+          </div>
+        </div>
+        <div class="result-box" id="bc-result">qu = — kPa</div>
+      </div>
+    </section>
+
+    <!-- Consolidation Settlement -->
+    <section class="calc-section">
+      <h3>Primary Consolidation Settlement (NC clay)</h3>
+      <div class="formula">Sc = (Cc · H / (1 + e0)) · log10((σ0' + Δσ) / σ0')</div>
+      <div class="calc-grid">
+        <div>
+          <div class="control-group">
+            <label>Compression index Cc <span id="cons-cc-val">0.3</span></label>
+            <input type="range" id="cons-cc" min="0.05" max="1" step="0.05" value="0.3" />
+          </div>
+          <div class="control-group">
+            <label>Initial void ratio e0 <span id="cons-e0-val">0.8</span></label>
+            <input type="range" id="cons-e0" min="0.3" max="1.5" step="0.05" value="0.8" />
+          </div>
+          <div class="control-group">
+            <label>Layer thickness H <span id="cons-h-val">5 m</span></label>
+            <input type="range" id="cons-h" min="1" max="15" step="0.5" value="5" />
+          </div>
+          <div class="control-group">
+            <label>Initial effective stress σ0' <span id="cons-s0-val">100 kPa</span></label>
+            <input type="range" id="cons-s0" min="20" max="300" step="5" value="100" />
+          </div>
+          <div class="control-group">
+            <label>Stress increase Δσ <span id="cons-ds-val">50 kPa</span></label>
+            <input type="range" id="cons-ds" min="5" max="200" step="5" value="50" />
+          </div>
+        </div>
+        <div class="result-box" id="cons-result">Settlement Sc = — m</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Physics Lab • Geotechnics calculators (educational approximations)</p>
+    </div>
+  </footer>
+
+  <script src="geotechnics.js"></script>
+</body>
+</html>
