@@ -24,7 +24,6 @@
       background: #0f172a;
       border-radius: 8px;
       padding: 1rem;
-      margin-top: 1rem;
       font-family: ui-monospace, monospace;
     }
     .result-box strong { color: var(--accent); }
@@ -36,6 +35,14 @@
       margin: 0.5rem 0 1rem;
       font-size: 0.9rem;
       color: #93c5fd;
+    }
+    .viz-canvas {
+      width: 100%;
+      height: 180px;
+      background: #020617;
+      border-radius: 8px;
+      margin-top: 0.75rem;
+      display: block;
     }
   </style>
 </head>
@@ -50,7 +57,6 @@
   <main class="container">
     <a href="index.html" class="back-link">← Back to simulations</a>
 
-    <!-- Mohr-Coulomb -->
     <section class="calc-section">
       <h3>Mohr-Coulomb Shear Strength</h3>
       <div class="formula">τ = c + σ · tan(φ)</div>
@@ -69,11 +75,13 @@
             <input type="range" id="mc-sigma" min="0" max="500" step="5" value="50" />
           </div>
         </div>
-        <div class="result-box" id="mc-result">Shear strength τ = — kPa</div>
+        <div>
+          <div class="result-box" id="mc-result">Shear strength τ = — kPa</div>
+          <canvas id="mc-canvas" class="viz-canvas"></canvas>
+        </div>
       </div>
     </section>
 
-    <!-- Rankine Earth Pressure -->
     <section class="calc-section">
       <h3>Rankine Earth Pressure Coefficients</h3>
       <div class="formula">Ka = tan²(45° − φ/2) &nbsp;&nbsp; Kp = tan²(45° + φ/2)</div>
@@ -92,15 +100,17 @@
             <input type="range" id="rank-g" min="10" max="25" step="0.5" value="18" />
           </div>
         </div>
-        <div class="result-box" id="rank-result">Ka = — &nbsp; Kp = —</div>
+        <div>
+          <div class="result-box" id="rank-result">Ka = — &nbsp; Kp = —</div>
+          <canvas id="rank-canvas" class="viz-canvas"></canvas>
+        </div>
       </div>
     </section>
 
-    <!-- Terzaghi Bearing Capacity (simplified) -->
     <section class="calc-section">
       <h3>Terzaghi Bearing Capacity (Strip Footing)</h3>
       <div class="formula">qu = c·Nc + q·Nq + 0.5·γ·B·Nγ</div>
-      <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1rem;">Approximate Nc, Nq, Nγ used for teaching. For φ=0: Nc≈5.7, Nq=1, Nγ=0.</p>
+      <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1rem;">Approximate factors for teaching. φ=0 → Nc≈5.7, Nq=1, Nγ=0.</p>
       <div class="calc-grid">
         <div>
           <div class="control-group">
@@ -124,11 +134,13 @@
             <input type="range" id="bc-g" min="10" max="25" step="0.5" value="18" />
           </div>
         </div>
-        <div class="result-box" id="bc-result">qu = — kPa</div>
+        <div>
+          <div class="result-box" id="bc-result">qu = — kPa</div>
+          <canvas id="bc-canvas" class="viz-canvas"></canvas>
+        </div>
       </div>
     </section>
 
-    <!-- Consolidation Settlement -->
     <section class="calc-section">
       <h3>Primary Consolidation Settlement (NC clay)</h3>
       <div class="formula">Sc = (Cc · H / (1 + e0)) · log10((σ0' + Δσ) / σ0')</div>
@@ -155,14 +167,17 @@
             <input type="range" id="cons-ds" min="5" max="200" step="5" value="50" />
           </div>
         </div>
-        <div class="result-box" id="cons-result">Settlement Sc = — m</div>
+        <div>
+          <div class="result-box" id="cons-result">Settlement Sc = — m</div>
+          <canvas id="cons-canvas" class="viz-canvas"></canvas>
+        </div>
       </div>
     </section>
   </main>
 
   <footer>
     <div class="container">
-      <p>Physics Lab • Geotechnics calculators (educational approximations)</p>
+      <p>Physics Lab • Geotechnics calculators with visualisations</p>
     </div>
   </footer>
 
