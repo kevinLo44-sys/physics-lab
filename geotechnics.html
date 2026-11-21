@@ -173,6 +173,31 @@
         </div>
       </div>
     </section>
+
+    <section class="calc-section">
+      <h3>Darcy’s Law – Seepage Velocity</h3>
+      <div class="formula">v = k · i &nbsp;&nbsp; (i = Δh / L)</div>
+      <div class="calc-grid">
+        <div>
+          <div class="control-group">
+            <label>Permeability k <span id="darcy-k-val">1×10⁻⁴ m/s</span></label>
+            <input type="range" id="darcy-k" min="-7" max="-2" step="0.1" value="-4" />
+          </div>
+          <div class="control-group">
+            <label>Head difference Δh <span id="darcy-dh-val">2 m</span></label>
+            <input type="range" id="darcy-dh" min="0.1" max="10" step="0.1" value="2" />
+          </div>
+          <div class="control-group">
+            <label>Flow path length L <span id="darcy-l-val">10 m</span></label>
+            <input type="range" id="darcy-l" min="1" max="50" step="1" value="10" />
+          </div>
+        </div>
+        <div>
+          <div class="result-box" id="darcy-result">v = — m/s</div>
+          <canvas id="darcy-canvas" class="viz-canvas"></canvas>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer>

@@ -24,26 +24,46 @@ function updateMohrCoulomb() {
 
   const { ctx, w, h } = setupCanvas('mc-canvas');
   ctx.clearRect(0, 0, w, h);
-  const maxS = 200, maxT = 150;
-  const sx = (w - 40) / maxS, sy = (h - 40) / maxT;
+  const maxS = 250, maxT = 180;
+  const sx = (w - 50) / maxS, sy = (h - 50) / maxT;
+  const ox = 40, oy = h - 30;
+
   ctx.strokeStyle = '#475569';
-  ctx.beginPath(); ctx.moveTo(30, h - 20); ctx.lineTo(w - 10, h - 20); ctx.moveTo(30, h - 20); ctx.lineTo(30, 20); ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(ox, oy); ctx.lineTo(w - 10, oy);
+  ctx.moveTo(ox, oy); ctx.lineTo(ox, 15);
+  ctx.stroke();
+
   ctx.strokeStyle = '#3b82f6';
   ctx.lineWidth = 2;
   ctx.beginPath();
-  for (let s = 0; s <= maxS; s += 5) {
+  for (let s = 0; s <= maxS; s += 4) {
     const t = c + s * Math.tan(phi * Math.PI / 180);
-    const x = 30 + s * sx, y = h - 20 - Math.min(t, maxT) * sy;
+    const x = ox + s * sx;
+    const y = oy - Math.min(t, maxT) * sy;
     if (s === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
   }
   ctx.stroke();
-  const px = 30 + sigma * sx, py = h - 20 - Math.min(tau, maxT) * sy;
+
+  const center = sigma + tau / Math.tan(Math.max(phi * Math.PI / 180, 0.05));
+  const radius = Math.hypot(center - sigma, tau);
+  if (radius > 0 && radius < maxS) {
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(ox + center * sx, oy, radius * sx, Math.PI, 0, true);
+    ctx.stroke();
+  }
+
+  const px = ox + sigma * sx;
+  const py = oy - Math.min(tau, maxT) * sy;
   ctx.fillStyle = '#ef4444';
   ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.fill();
+
   ctx.fillStyle = '#94a3b8';
   ctx.font = '11px system-ui';
-  ctx.fillText('σ', w - 25, h - 8);
-  ctx.fillText('τ', 8, 30);
+  ctx.fillText('σ', w - 22, oy + 14);
+  ctx.fillText('τ', ox - 18, 25);
 }
 
 function updateRankine() {
@@ -185,6 +205,50 @@ function updateConsolidation() {
   ctx.fillText('↓ Sc', 130, 30 + layerH + 15);
 }
 
+function updateDarcy() {
+  const kExp = +document.getElementById('darcy-k').value;
+  const dh = +document.getElementById('darcy-dh').value;
+  const L = +document.getElementById('darcy-l').value;
+  const k = Math.pow(10, kExp);
+
+  document.getElementById('darcy-k-val').textContent = k.toExponential(1) + ' m/s';
+  document.getElementById('darcy-dh-val').textContent = dh.toFixed(1) + ' m';
+  document.getElementById('darcy-l-val').textContent = L + ' m';
+
+  const i = dh / L;
+  const v = k * i;
+
+  document.getElementById('darcy-result').innerHTML =
+    `<strong>Seepage velocity v = ${v.toExponential(2)} m/s</strong><br>Hydraulic gradient i = ${i.toFixed(3)}`;
+
+  const { ctx, w, h } = setupCanvas('darcy-canvas');
+  ctx.clearRect(0, 0, w, h);
+  const y = h / 2;
+  ctx.strokeStyle = '#64748b';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(30, y - 30); ctx.lineTo(w - 30, y - 30);
+  ctx.moveTo(30, y + 30); ctx.lineTo(w - 30, y + 30);
+  ctx.stroke();
+  ctx.strokeStyle = '#3b82f6';
+  ctx.beginPath();
+  ctx.moveTo(50, y - 50); ctx.lineTo(50, y - 10);
+  ctx.moveTo(w - 50, y - 20); ctx.lineTo(w - 50, y + 10);
+  ctx.stroke();
+  ctx.strokeStyle = '#22c55e';
+  for (let x = 80; x < w - 80; x += 40) {
+    ctx.beginPath();
+    ctx.moveTo(x, y); ctx.lineTo(x + 20, y);
+    ctx.lineTo(x + 14, y - 4); ctx.moveTo(x + 20, y); ctx.lineTo(x + 14, y + 4);
+    ctx.stroke();
+  }
+  ctx.fillStyle = '#e2e8f0';
+  ctx.font = '11px system-ui';
+  ctx.fillText('High head', 35, y - 55);
+  ctx.fillText('Low head', w - 90, y - 25);
+  ctx.fillText('Flow →', w / 2 - 20, y + 50);
+}
+
 ['mc-c','mc-phi','mc-sigma'].forEach(id =>
   document.getElementById(id).addEventListener('input', updateMohrCoulomb));
 ['rank-phi','rank-h','rank-g'].forEach(id =>
@@ -193,12 +257,15 @@ function updateConsolidation() {
   document.getElementById(id).addEventListener('input', updateBearing));
 ['cons-cc','cons-e0','cons-h','cons-s0','cons-ds'].forEach(id =>
   document.getElementById(id).addEventListener('input', updateConsolidation));
+['darcy-k','darcy-dh','darcy-l'].forEach(id =>
+  document.getElementById(id).addEventListener('input', updateDarcy));
 
 window.addEventListener('resize', () => {
-  updateMohrCoulomb(); updateRankine(); updateBearing(); updateConsolidation();
+  updateMohrCoulomb(); updateRankine(); updateBearing(); updateConsolidation(); updateDarcy();
 });
 
 updateMohrCoulomb();
 updateRankine();
 updateBearing();
 updateConsolidation();
+updateDarcy();
